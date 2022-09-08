@@ -1,0 +1,6 @@
+---
+- name: Installing Python Environment
+  hosts: developers
+  become: true
+  roles:
+     - python_dev

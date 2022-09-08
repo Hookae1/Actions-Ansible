@@ -1,0 +1,27 @@
+---
+- name: Update Ubuntu cache
+  apt:
+    update_cache: true
+    force_apt_get: true
+    cache_valid_time: 3600
+- name: Install and upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip3
+- name: Install Python tools
+  apt:
+    pkg:
+      - python3-pip
+      - python3-setuptools
+      - python3.8-venv
+    state: present
+    update_cache: true
+- name: Install Python venvs from requirements.txt
+  pip:
+    requirements: "{{ item }}"
+    virtualenv: "{{ dest_path }}/{{ item | basename| splitext | first }}"
+    virtualenv_command: "{{ ansible_python.executable }} -m venv"
+  with_fileglob: "*.txt"
+  loop_control:
+    label: "{{ item | basename | splitext | first }}"
